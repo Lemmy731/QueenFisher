@@ -19,6 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
+	<PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0" />
     <PackageReference Include="RavenDB.Client" Version="5.2.2" />
     <PackageReference Include="Refit" Version="6.3.2" />
@@ -31,10 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\QueenFisher.Core\QueenFisher.Core.csproj" />
     <ProjectReference Include="..\QueenFisher.Data\QueenFisher.Data.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

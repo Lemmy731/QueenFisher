@@ -1,5 +1,9 @@
 
+using QueenFisher.Core.Interfaces.IRepositories;
+using QueenFisher.Core.Interfaces.IServices;
+using QueenFisher.Core.Services;
 using QueenFisher.Core.Utilities;
+using QueenFisher.Data.Repositories;
 
 namespace QueenFisher.Api.Extensions
 {
@@ -12,8 +16,13 @@ namespace QueenFisher.Api.Extensions
 
 
             // Add Repository Injections Here
-
+            services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+          
             // Add Model Services Injection Here
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ITokenDetails, TokenDetails>();
 
             // Add Fluent Validator Injections Here
 
