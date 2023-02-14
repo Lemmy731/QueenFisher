@@ -1,10 +1,11 @@
-﻿using MimeKit;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 using QueenFisher.Core.Interfaces;
 using QueenFisher.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
+
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
