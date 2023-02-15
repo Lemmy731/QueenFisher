@@ -15,16 +15,16 @@ namespace QueenFisher.Core.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthenticationRepository _repository;
+        private readonly IAuthenticationRepository _authrepository;
 
-        public AuthService(IAuthenticationRepository repository)
+        public AuthService(IAuthenticationRepository authrepository)
         {
-            _repository = repository;
+            _authrepository = authrepository;
         }
         public async Task<object> ChangePassword(ChangePasswordDTO model)
         {
             if (model.ConfirmNewPassword != model.NewPassword) return "Password does not match";
-            var response = await _repository.ChangePassword(model);
+            var response = await _authrepository.ChangePassword(model);
             return response;
         }
 
@@ -32,7 +32,7 @@ namespace QueenFisher.Core.Services
         {
             try
             {
-                var response = await _repository.Confirmemail(email, token);
+                var response = await _authrepository.Confirmemail(email, token);
                 if (response.Succeeded)
                 {
                     return Response<string>.Success("email verified successfully", "verification confirmed", (int)HttpStatusCode.Accepted);
@@ -48,30 +48,31 @@ namespace QueenFisher.Core.Services
 
         public async Task<object> ForgottenPassword(ResetPasswordDTO model)
         {
-            var response = await _repository.ForgottenPassword(model);
+            var response = await _authrepository.ForgottenPassword(model);
             return response;
         }
 
         public async Task<Response<string>> Login(LoginDTO model)
         {
-            return await _repository.Login(model);
+            return await _authrepository.Login(model);
         }
 
         public async Task<Response<string>> RefreshToken()
         {
 
-            return await _repository.RefreshToken();
+            return await _authrepository.RefreshToken();
         }
 
         public async Task<Response<string>> Register(RegisterDTO user)
         {
-            var result = await _repository.Register(user);
+            var result = await _authrepository.Register(user);
             var response = new Response<string>();
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 response.Succeeded = true;
                 response.StatusCode = (int)HttpStatusCode.Created;
                 response.Message = "Successfully registered";
+                response.Data = result.Data;
             }
             else
             {
@@ -85,8 +86,26 @@ namespace QueenFisher.Core.Services
 
         public async Task<object> ResetPassword(UpdatePasswordDTO model)
         {
-            var response = await _repository.ResetPassword(model);
+            var response = await _authrepository.ResetPassword(model);
             return response;
+        }
+
+        public async Task<Response<string>> ConfirmEmail(string email, string token)
+        {
+            try
+            {
+                var response = await _authrepository.Confirmemail(email, token);
+                if (response.Succeeded)
+                {
+                    return Response<string>.Success("email verified successfully", "verification confirmed", (int)HttpStatusCode.Accepted);
+                }
+                return Response<string>.Fail("email not verified", (int)HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
+            {
+                return Response<string>.Fail("an error occured while verifying email", (int)HttpStatusCode.InternalServerError);
+
+            }
         }
     }
 }

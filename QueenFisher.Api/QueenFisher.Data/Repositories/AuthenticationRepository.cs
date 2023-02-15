@@ -50,12 +50,28 @@ namespace QueenFisher.Data.Repositories
             return "Password changed succesffully";
         }
 
-        public Task<object> ForgottenPassword(ResetPasswordDTO model)
+        public async  Task<object> ForgottenPassword(ResetPasswordDTO model)
         {
-            throw new NotImplementedException();
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var response = new Response<string> { Succeeded = false };
+            if (user == null)
+            {
+                response.StatusCode = (int)HttpStatusCode.BadRequest;
+                response.Message = "The Email Provided is not associated with a user account";
+                return response;
+            }
+
+            var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var emailMsg = new EmailMessage(new string[] { user.Email }, "Reset your password", $"Please Follow the Link to reset your Password: https://localhost:7031/api/Auth/Reset-Update-Password?token={resetPasswordToken}");
+            await _emailService.SendEmailAsync(emailMsg);
+            response.Succeeded = true;
+            response.Message = "A password reset Link has been sent to your email address";
+            response.StatusCode = (int)HttpStatusCode.OK;
+            return response;
         }
 
-        public async Task<Response<string>> Login(LoginDTO model)
+        public async Task<Response<string>> Login(LoginDTO model)                                                  
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             var response = new Response<string>();
@@ -138,7 +154,7 @@ namespace QueenFisher.Data.Repositories
             {
                 // checks if a user with the specified email already exists in the system
                 var checkUser = await _userManager.FindByEmailAsync(user.Email);
-                if(checkUser == null)
+                if(checkUser != null)
                 {
                     return Response<string>.Fail("user already exist", (int)HttpStatusCode.Unauthorized);
                 }
@@ -157,7 +173,7 @@ namespace QueenFisher.Data.Repositories
                 newUser.PasswordHash = user.Password;
                 newUser.PublicId = user.Publicid;
                 newUser.IsActive = user.IsActive;
-                newUser.Gender = user.Gender;
+                newUser.Gender = (Gender)(user.Gender);
 
 
                 var roles = await _roleManager.Roles.ToListAsync();
