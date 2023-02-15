@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCoreHero.Results" Version="1.1.1" />
     <Compile Remove="DTO\**" />
     <Compile Remove="Enums\**" />
     <EmbeddedResource Remove="DTO\**" />
@@ -34,4 +35,8 @@
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTO\" />
+  </ItemGroup>
 </Project>

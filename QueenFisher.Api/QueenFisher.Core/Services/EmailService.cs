@@ -1,9 +1,11 @@
 ﻿using MimeKit;
+using QueenFisher.Core.Interfaces;
 using QueenFisher.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
@@ -13,13 +15,15 @@ using QueenFisher.Core.Interfaces.IServices;
 namespace QueenFisher.Core.Services
 {
     public class EmailService : IEmailService
-    {
-        private readonly EmailConfiguration _emailConfig;
+    { 
 
+        private readonly EmailConfiguration _emailConfig;
+    
         public EmailService(EmailConfiguration emailConfig)
         {
             _emailConfig = emailConfig;
         }
+
         public async Task SendEmailAsync(EmailMessage message)
         {
             var emailMessage = CreateEmailMessage(message);
