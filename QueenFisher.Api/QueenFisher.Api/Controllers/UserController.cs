@@ -39,7 +39,7 @@ namespace QueenFisher.Api.Controllers
             var result = await _userService.DeleteUser(currentUserId,userIdToDelete);
             return result.Succeeded ? Ok(result) : BadRequest(result);
         }
-
+        
         [HttpPut("Single-User{userId}")]
         [Authorize(Roles = "SuperAdmin,Admin,Customer")]
         public async Task<IActionResult> UpdateUser(string userId, AppUserDtoForUpdate userDto)

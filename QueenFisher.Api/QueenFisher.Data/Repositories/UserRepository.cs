@@ -28,7 +28,7 @@ namespace QueenFisher.Data.Repositories
 
 
         public async Task<bool> DeleteUserAsync(string currentUserId, string userIdToDelete)
-            {
+        {
                 // get the user making the request
                 var currentUser = await _userManager.FindByIdAsync(currentUserId);
 
@@ -36,17 +36,18 @@ namespace QueenFisher.Data.Repositories
                 var userToDelete = await _userManager.FindByIdAsync(userIdToDelete);
 
                 if (userToDelete == null)
-                {
+            {
                     return false;
-                }
-
+            }
+            return "Operation Failed";
+            
                 // check if the current user has the necessary permissions to delete the user
                 if (await _userManager.IsInRoleAsync(currentUser, "SuperAdmin") )
                 {
                     // SuperAdmin can delete any user
                     await _userManager.DeleteAsync(userToDelete);
                     return true;
-                }
+        }
                 else if (await _userManager.IsInRoleAsync(currentUser, "Admin"))
                 {
                     // Admin can only delete Customers or themselves
@@ -78,7 +79,7 @@ namespace QueenFisher.Data.Repositories
                     return false;
                 }
             }
-        
+
 
 
 
@@ -130,7 +131,14 @@ namespace QueenFisher.Data.Repositories
             // Check if the current user has the required permissions to update the user
             if (!await _userManager.IsInRoleAsync(currentUser, "SuperAdmin") && currentUser.Id != userToUpdate.Id)
             {
-                return null;
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Gender = (int)x.Gender,
+                Avatar = x.Avatar,
+                IsActive = x.IsActive,
+            }).ToListAsync();
+            if(result.Count != 0) return result;
+            return null;
             }
 
             // Update the user's properties
@@ -160,7 +168,7 @@ namespace QueenFisher.Data.Repositories
             return result;
 
 
-           
+
         }
         
 
@@ -171,6 +179,6 @@ namespace QueenFisher.Data.Repositories
 
 
 
-        }
     }
+}
 
