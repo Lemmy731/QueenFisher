@@ -29,75 +29,74 @@ namespace QueenFisher.Data.Repositories
 
         public async Task<bool> DeleteUserAsync(string currentUserId, string userIdToDelete)
         {
-                // get the user making the request
-                var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            // get the user making the request
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
 
-                // get the user being deleted
-                var userToDelete = await _userManager.FindByIdAsync(userIdToDelete);
+            // get the user being deleted
+            var userToDelete = await _userManager.FindByIdAsync(userIdToDelete);
 
-                if (userToDelete == null)
+            if (userToDelete == null)
             {
-                    return false;
+                return false;
             }
-            return "Operation Failed";
-            
-                // check if the current user has the necessary permissions to delete the user
-                if (await _userManager.IsInRoleAsync(currentUser, "SuperAdmin") )
+
+            // check if the current user has the necessary permissions to delete the user
+            if (await _userManager.IsInRoleAsync(currentUser, "SuperAdmin"))
+            {
+                // SuperAdmin can delete any user
+                await _userManager.DeleteAsync(userToDelete);
+                return true;
+            }
+            else if (await _userManager.IsInRoleAsync(currentUser, "Admin"))
+            {
+                // Admin can only delete Customers or themselves
+                if (await _userManager.IsInRoleAsync(userToDelete, "Customer") || userToDelete.Id == currentUser.Id)
                 {
-                    // SuperAdmin can delete any user
                     await _userManager.DeleteAsync(userToDelete);
                     return true;
-        }
-                else if (await _userManager.IsInRoleAsync(currentUser, "Admin"))
-                {
-                    // Admin can only delete Customers or themselves
-                    if (await _userManager.IsInRoleAsync(userToDelete, "Customer")  || userToDelete.Id == currentUser.Id)
-                    {
-                        await _userManager.DeleteAsync(userToDelete);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else if (await _userManager.IsInRoleAsync(currentUser, "Customer"))
-                {
-                    // Customers can only delete themselves
-                    if (userToDelete.Id == currentUser.Id)
-                    {
-                        await _userManager.DeleteAsync(userToDelete);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
                 }
                 else
                 {
                     return false;
                 }
             }
+            else if (await _userManager.IsInRoleAsync(currentUser, "Customer"))
+            {
+                // Customers can only delete themselves
+                if (userToDelete.Id == currentUser.Id)
+                {
+                    await _userManager.DeleteAsync(userToDelete);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
 
 
 
 
-    
 
-    public async Task<IEnumerable<AppUserDto>> GetUserAsynce(string? Role)
+
+        public async Task<IEnumerable<AppUserDto>> GetUserAsynce(string? Role)
         {
             var users = _context.Users;
             var list = new List<AppUser>();
             if (Role == null)
             {
                 var res = _mapper.Map<IEnumerable<AppUserDto>>(users.ToList());
-                if(res.Any())
+                if (res.Any())
                 {
                     return res;
                 }
                 return null;
-                
+
             }
             else
             {
@@ -114,10 +113,10 @@ namespace QueenFisher.Data.Repositories
             }
 
         }
-        public async Task<AppUserDtoForUpdate> UpdateUserDetails(string currentUserId, string userId, AppUserDtoForUpdate model )
+        public async Task<AppUserDtoForUpdate> UpdateUserDetails(string currentUserId, string userId, AppUserDtoForUpdate model)
         {
             // Retrieve the current user from the User.Identity object
-            var currentUser =await _userManager.FindByIdAsync(currentUserId);
+            var currentUser = await _userManager.FindByIdAsync(currentUserId);
 
             // Retrieve the user to update from the database
             var userToUpdate = await _userManager.FindByIdAsync(userId);
@@ -131,14 +130,7 @@ namespace QueenFisher.Data.Repositories
             // Check if the current user has the required permissions to update the user
             if (!await _userManager.IsInRoleAsync(currentUser, "SuperAdmin") && currentUser.Id != userToUpdate.Id)
             {
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Gender = (int)x.Gender,
-                Avatar = x.Avatar,
-                IsActive = x.IsActive,
-            }).ToListAsync();
-            if(result.Count != 0) return result;
-            return null;
+                return null;
             }
 
             // Update the user's properties
@@ -147,7 +139,7 @@ namespace QueenFisher.Data.Repositories
             //userToUpdate.UserName = model.UserName;
             //userToUpdate.Avatar = model.Avatar;
             //userToUpdate.Gender = model.Gender;
-            var users = _mapper.Map(model,userToUpdate);
+            var users = _mapper.Map(model, userToUpdate);
 
             //Update the user's roles if the current user is a SuperAdmin
             if (await _userManager.IsInRoleAsync(currentUser, "SuperAdmin"))
@@ -159,7 +151,7 @@ namespace QueenFisher.Data.Repositories
 
             // Save the changes to the database
 
-            
+
             var roles = await _userManager.GetRolesAsync(users);
             _context.SaveChanges();
 
@@ -170,7 +162,7 @@ namespace QueenFisher.Data.Repositories
 
 
         }
-        
+
 
 
 
@@ -181,4 +173,3 @@ namespace QueenFisher.Data.Repositories
 
     }
 }
-
