@@ -9,7 +9,5 @@ namespace QueenFisher.Core.Interfaces
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
-
-        IMealRepository MealRepository { get; }
     }
 }
