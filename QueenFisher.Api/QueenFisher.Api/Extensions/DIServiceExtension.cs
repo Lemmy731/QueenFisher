@@ -22,7 +22,6 @@ namespace QueenFisher.Api.Extensions
           
             // Add Fluent Validator Injections Here
 
-
         }
     }
 }
