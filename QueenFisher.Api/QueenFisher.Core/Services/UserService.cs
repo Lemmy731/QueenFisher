@@ -1,11 +1,14 @@
-﻿using AutoMapper;
-using QueenFisher.Core.Interfaces;
+﻿using AspNetCoreHero.Results;
+using AutoMapper;
+
+using QueenFisher.Data;
 using QueenFisher.Data.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace QueenFisher.Core.Services
 {
@@ -19,18 +22,27 @@ namespace QueenFisher.Core.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<Response<string>> DeleteUser(string userId)
+        public async Task<Result<string>> DeleteUser(string currentUserId, string userIdToDelete)
         {
-            var response = await _unitOfWork.UserRepository.DeleteUser(userId);
-            if(response != null) return Response<string>.Success("successful", userId);
-            return Response<string>.Fail("Failed");
+            var response = await _unitOfWork.UserRepository.DeleteUserAsync(currentUserId,userIdToDelete);
+            if(response) return Result<string>.Success("successful", "Done");
+            return Result<string>.Fail("Failed");
         }
 
-        public async Task<Response<IEnumerable<AppUserDto>>> GetAllUser()
+        public async Task<Result<IEnumerable<AppUserDto>>> GetAllUser(string? Role)
         {
-            var response = await _unitOfWork.UserRepository.GetUserAsynce();
-            if(response != null) return Response<IEnumerable<AppUserDto>>.Success("user loaded successfully", response);
-            return Response<IEnumerable<AppUserDto>>.Fail("Error Loading User");
+            var response = await _unitOfWork.UserRepository.GetUserAsynce(Role);
+            if(response != null) return  Result<IEnumerable<AppUserDto>>.Success((IEnumerable<AppUserDto>)response,"successful");
+            return Result<IEnumerable<AppUserDto>>.Fail("Error Loading User");
         }
+
+        public async Task<Result<AppUserDtoForUpdate>> UpdateUserDetails( string currentUser, string userId, AppUserDtoForUpdate userDto)
+        {
+            var response = await _unitOfWork.UserRepository.UpdateUserDetails(currentUser, userId, userDto);
+            if(response != null) return Result<AppUserDtoForUpdate>.Success(response,userId);
+            return Result<AppUserDtoForUpdate>.Fail("Failed");
+        }
+
+       
     }
 }
