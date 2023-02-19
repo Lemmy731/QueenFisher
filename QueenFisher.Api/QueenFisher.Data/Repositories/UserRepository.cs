@@ -151,7 +151,7 @@ namespace QueenFisher.Data.Repositories
 
             // Save the changes to the database
 
-
+            _context.Users.Update(users);
             var roles = await _userManager.GetRolesAsync(users);
             _context.SaveChanges();
 

@@ -4,6 +4,7 @@ using QueenFisher.Core.Services;
 using QueenFisher.Core.Utilities;
 using QueenFisher.Data;
 using QueenFisher.Data.UnitOfWork;
+using IUnitOfWork = QueenFisher.Data.IUnitOfWork;
 
 namespace QueenFisher.Api.Extensions
 {

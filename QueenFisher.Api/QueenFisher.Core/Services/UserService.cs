@@ -32,7 +32,7 @@ namespace QueenFisher.Core.Services
         public async Task<Result<IEnumerable<AppUserDto>>> GetAllUser(string? Role)
         {
             var response = await _unitOfWork.UserRepository.GetUserAsynce(Role);
-            if(response != null) return  Result<IEnumerable<AppUserDto>>.Success(response,"user loaded successfully");
+            if(response != null) return  Result<IEnumerable<AppUserDto>>.Success((IEnumerable<AppUserDto>)response,"successful");
             return Result<IEnumerable<AppUserDto>>.Fail("Error Loading User");
         }
 
@@ -42,5 +42,7 @@ namespace QueenFisher.Core.Services
             if(response != null) return Result<AppUserDtoForUpdate>.Success(response,userId);
             return Result<AppUserDtoForUpdate>.Fail("Failed");
         }
+
+       
     }
 }
