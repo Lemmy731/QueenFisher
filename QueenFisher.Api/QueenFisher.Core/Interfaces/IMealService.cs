@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using QueenFisher.Data.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace QueenFisher.Core.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IMealService
     {
-        IUserRepository UserRepository { get; }
-
-        IMealRepository MealRepository { get; }
+        Task<Response<IEnumerable<MealsDTO>>> GetMeals();
     }
 }
