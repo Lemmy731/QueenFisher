@@ -1,5 +1,4 @@
 
-using QueenFisher.Core.Interfaces;
 using QueenFisher.Core.Services;
 using QueenFisher.Core.Utilities;
 using QueenFisher.Data;
@@ -20,7 +19,7 @@ namespace QueenFisher.Api.Extensions
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             // Add Model Services Injection Here
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IMealService, MealService>();
+          
             // Add Fluent Validator Injections Here
 
 

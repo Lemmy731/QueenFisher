@@ -3,11 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using QueenFisher.Data.Context;
 using QueenFisher.Data.Domains;
 using QueenFisher.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace QueenFisher.Data.UnitOfWork
 {
@@ -17,16 +13,16 @@ namespace QueenFisher.Data.UnitOfWork
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
         private IUserRepository _userRepository;
-        private MealRepository _mealRepository;
+   
 
-        public UnitOfWork(QueenFisherDbContext context)
-        public UnitOfWork(QueenFisherDbContext context, UserManager<AppUser>  userManager)
+        
+        public UnitOfWork(QueenFisherDbContext context, UserManager<AppUser>  userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
+            _mapper = mapper;
         }
         public IUserRepository UserRepository => _userRepository ?? new UserRepository(_context, _userManager,_mapper);
-        public IUserRepository UserRepository => _userRepository ?? new UserRepository(_context);
-        public IMealRepository MealRepository => _mealRepository ?? new MealRepository(_context);
+       
     }
 }
