@@ -9,18 +9,18 @@ namespace QueenFisher.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MealController : ControllerBase
+    public class GetMealController : ControllerBase
     {
-        private readonly IMealService _mealService;
+        private readonly IGetMealService _mealService;
 
-        public MealController(IMealService mealService)
+        public GetMealController(IGetMealService mealService)
         {
             _mealService = mealService;
         }
 
 
         [HttpGet("All-Meals")]
-       // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetMeals()
         {
             var result = await _mealService.GetAllMeals();

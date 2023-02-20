@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QueenFisher.Data.IRepositories
 {
-    public interface IMealRepository
+    public interface IGetMealRepository
     {
         Task<IEnumerable<MealDTO>> GetAllMealsAsync();
     }

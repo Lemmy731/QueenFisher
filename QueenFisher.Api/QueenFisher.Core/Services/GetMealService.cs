@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace QueenFisher.Core.Services
 {
-    public class MealService : IMealService
+    public class GetMealService : IGetMealService
 
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public MealService(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetMealService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

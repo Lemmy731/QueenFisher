@@ -4,7 +4,7 @@ using QueenFisher.Data.DTO;
 
 namespace QueenFisher.Data
 {
-    public interface IMealService
+    public interface IGetMealService
     {
         Task<Result<IEnumerable<MealDTO>>> GetAllMeals();
     }

@@ -11,6 +11,6 @@ namespace QueenFisher.Data
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
-        IMealRepository MealRepository { get; }
+        IGetMealRepository MealRepository { get; }
     }
 }

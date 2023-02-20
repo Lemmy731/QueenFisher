@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace QueenFisher.Data.Repositories
 {
-    public class MealRepository : IMealRepository
+    public class GetMealRepository : IGetMealRepository
     {
        
         private QueenFisherDbContext _context;
@@ -21,7 +21,7 @@ namespace QueenFisher.Data.Repositories
 
         
 
-        public MealRepository(QueenFisherDbContext context, IMapper mapper)
+        public GetMealRepository(QueenFisherDbContext context, IMapper mapper)
         {
             _context = context;
             
