@@ -10,5 +10,6 @@ namespace QueenFisher.Data
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
+        Task<int> Save();
     }
 }
