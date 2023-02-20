@@ -1,4 +1,4 @@
-﻿using QueenFisher.Data;
+using QueenFisher.Data;
 using QueenFisher.Data.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,9 @@ namespace QueenFisher.Data
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
+
         IGetMealRepository MealRepository { get; }
+        Task<int> Save();
+
     }
 }

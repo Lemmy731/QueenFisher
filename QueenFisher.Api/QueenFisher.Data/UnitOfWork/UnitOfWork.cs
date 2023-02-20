@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using QueenFisher.Data.Context;
 using QueenFisher.Data.Domains;
@@ -31,6 +31,14 @@ namespace QueenFisher.Data.UnitOfWork
 
         
         public IUserRepository UserRepository => _userRepository ?? new UserRepository(_context, _userManager,_mapper);
+
         public IGetMealRepository MealRepository => _mealRepository ?? new GetMealRepository(_context, _mapper);
+
+       
+        public async Task<int> Save()
+        {
+            return _context.SaveChanges();
+        }
+
     }
 }
