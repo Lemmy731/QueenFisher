@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AspNetCoreHero.Results;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using QueenFisher.Core.DTO;
 using QueenFisher.Core.Interfaces.IRepositories;
 using QueenFisher.Core.Interfaces.IServices;
@@ -21,91 +23,96 @@ namespace QueenFisher.Core.Services
         {
             _authrepository = authrepository;
         }
-        public async Task<object> ChangePassword(ChangePasswordDTO model)
+        public async Task<Result<string>>ChangePassword(ChangePasswordDTO model)
         {
-            if (model.ConfirmNewPassword != model.NewPassword) return "Password does not match";
+            if (model.ConfirmNewPassword != model.NewPassword) return await Result<string>.FailAsync("Password does not match");
             var response = await _authrepository.ChangePassword(model);
             return response;
         }
 
-        public async Task<Response<string>> Confirmemail(string email, string token)
+        public async Task<Result<string>> Confirmemail(string email, string token)
         {
             try
             {
                 var response = await _authrepository.Confirmemail(email, token);
                 if (response.Succeeded)
                 {
-                    return Response<string>.Success("email verified successfully", "verification confirmed", (int)HttpStatusCode.Accepted);
+                    return await Result<string>.SuccessAsync("email verified successfully");
                 }
-                return Response<string>.Fail("email not verified", (int)HttpStatusCode.BadRequest);
+                return await Result<string>.FailAsync("email not verified");
             }
             catch (Exception ex)
             {
-                return Response<string>.Fail("an error occured while verifying email", (int)HttpStatusCode.InternalServerError);
+                return await Result<string>.FailAsync("an error occured while verifying email");
 
             }
         }
 
-        public async Task<object> ForgottenPassword(ResetPasswordDTO model)
+        public async Task<Result<string>>ForgottenPassword(ResetPasswordDTO model)
         {
             var response = await _authrepository.ForgottenPassword(model);
             return response;
         }
 
-        public async Task<Response<string>> Login(LoginDTO model)
+        public async Task<Result<LoginUserDTO>> Login(LoginDTO model)
         {
             return await _authrepository.Login(model);
         }
 
-        public async Task<Response<string>> RefreshToken()
+        public async Task<Result<string>> RefreshToken()
         {
 
             return await _authrepository.RefreshToken();
         }
 
-        public async Task<Response<string>> Register(RegisterDTO user)
+        public async Task<Result<string>> Register(RegisterDTO user)
         {
             var result = await _authrepository.Register(user);
-            var response = new Response<string>();
+            //var response = new Result<string>();
             if (result.Succeeded)
             {
-                response.Succeeded = true;
-                response.StatusCode = (int)HttpStatusCode.Created;
-                response.Message = "Successfully registered";
-                response.Data = result.Data;
+                //response.Succeeded = true;
+                // response.Message = result.Message;
+                //response.Data = result.Data;
+                //return await Result<string>.SuccessAsync(result.Message);
+                return new Result<string> { Succeeded = true, Data = result.Data, Message = result.Message };
             }
             else
             {
-                response.Succeeded = false;
-                response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-                response.Message = "Failed to register, please change check the email, username and password.";
+               // response.Succeeded = false;
+               // response.Message = "Failed to register, please change check the email, username and password.";
+                return await Result<string>.FailAsync("Failed to register, please change check the email, username and password.");
             }
 
-            return response;
+           // return Result;
         }
 
-        public async Task<object> ResetPassword(UpdatePasswordDTO model)
+        public async Task<Result<string>>ResetPassword(UpdatePasswordDTO model)
         {
             var response = await _authrepository.ResetPassword(model);
             return response;
         }
 
-        public async Task<Response<string>> ConfirmEmail(string email, string token)
+        public async Task<Result<string>> ConfirmEmail(string email, string token)
         {
             try
             {
                 var response = await _authrepository.Confirmemail(email, token);
                 if (response.Succeeded)
                 {
-                    return Response<string>.Success("email verified successfully", "verification confirmed", (int)HttpStatusCode.Accepted);
+                    return await Result<string>.SuccessAsync("email verified successfully");
                 }
-                return Response<string>.Fail("email not verified", (int)HttpStatusCode.BadRequest);
+                return await Result<string>.FailAsync("email not verified");
             }
             catch (Exception ex)
             {
-                return Response<string>.Fail("an error occured while verifying email", (int)HttpStatusCode.InternalServerError);
+                return await Result<string>.FailAsync("an error occured while verifying email");
 
             }
+        }
+        public async Task Signout()
+        {
+            await _authrepository.Signout();
         }
     }
 }

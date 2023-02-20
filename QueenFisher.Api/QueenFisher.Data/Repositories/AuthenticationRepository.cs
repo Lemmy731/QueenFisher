@@ -1,10 +1,12 @@
-﻿using CloudinaryDotNet.Actions;
+﻿using AspNetCoreHero.Results;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using QueenFisher.Core;
 using QueenFisher.Core.DTO;
+using QueenFisher.Core.Interfaces;
 using QueenFisher.Core.Interfaces.IRepositories;
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Core.Utilities;
@@ -41,40 +43,35 @@ namespace QueenFisher.Data.Repositories
             _emailService = emailService;
         }
         public string GetId() => _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        public async Task<object> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        public async Task<Result<string>> ChangePassword(ChangePasswordDTO changePasswordDTO)
         {
             var user = await _userManager.FindByIdAsync(GetId());
-            if (user == null) return "Please login to change password";
+            if (user == null) return await Result<string>.FailAsync("you must be logged in to change password");
             var result = await _userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
-            if (!result.Succeeded) return "Unable to change password: password should contain a Capital, number, character and minimum length of 8";
-            return "Password changed succesffully";
+            if (!result.Succeeded) return await Result<string>.FailAsync("Unable to change password: password should contain a Capital, number, character and minimum length of 8");
+
+            return await Result<string>.SuccessAsync("password changed successfully");
         }
 
-        public async  Task<object> ForgottenPassword(ResetPasswordDTO model)
+        public async Task<Result<string>> ForgottenPassword(ResetPasswordDTO model)
         {
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-            var response = new Response<string> { Succeeded = false };
             if (user == null)
             {
-                response.StatusCode = (int)HttpStatusCode.BadRequest;
-                response.Message = "The Email Provided is not associated with a user account";
-                return response;
+                return await Result<string>.FailAsync("The Email Provided is not associated with a user account");
             }
 
             var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             var emailMsg = new EmailMessage(new string[] { user.Email }, "Reset your password", $"Please Follow the Link to reset your Password: https://localhost:7031/api/Auth/Reset-Update-Password?token={resetPasswordToken}");
             await _emailService.SendEmailAsync(emailMsg);
-            response.Succeeded = true;
-            response.Message = "A password reset Link has been sent to your email address";
-            response.StatusCode = (int)HttpStatusCode.OK;
-            return response;
+            return await Result<string>.SuccessAsync("A password reset Link has been sent to your email address");
         }
 
-        public async Task<Response<string>> Login(LoginDTO model)                                                  
+        public async Task<Result<LoginUserDTO>> Login(LoginDTO model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
-            var response = new Response<string>();
+            //var response = new Response<string>();
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
@@ -90,19 +87,29 @@ namespace QueenFisher.Data.Repositories
                 var refreshToken = _token.SetRefreshToken();
                 //var refreshToken = SetRefreshToken();
                 await SaveRefreshToken(user, refreshToken);
-                response.Succeeded = true;
-                response.Data = _token.CreateToken(UserModel);
-                response.StatusCode = (int)HttpStatusCode.Accepted;
-                response.Message = "Logged in successfully";
+                return new Result<LoginUserDTO>
+                {
+                    Succeeded = true,
+                    Data = new LoginUserDTO
+                    {
+                        firstname = user.FirstName,
+                        lastname = user.LastName,
+                        username = user.UserName,
+                        roles = userRoles,
+                        token = _token.CreateToken(UserModel)
+                    },
+                    Message = "Logged in successfully"
+                };
             }
             else
             {
-                response.Succeeded = false;
-                response.Message = "Wrong Credential";
+                //response.Succeeded = false;
+                //response.Message = "Wrong Credential";
 
-                response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                //response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                return await Result<LoginUserDTO>.FailAsync("Wrong Credential");
             }
-            return response;
+            return new Result<LoginUserDTO>();
         }
 
         private async Task SaveRefreshToken(AppUser user, RefreshToken refreshToken)
@@ -112,14 +119,14 @@ namespace QueenFisher.Data.Repositories
             await _userManager.UpdateAsync(user);
         }
 
-        public async Task<Response<string>> RefreshToken()
+        public async Task<Result<string>> RefreshToken()
         {
             var currentToken = _httpContext.HttpContext.Request.Cookies["refresh-token"];
             var user = await _userManager.FindByIdAsync(_tokenDetails.GetId());
 
-            var response = new Response<string>();
+            var response = new Result<string>();
             response.Succeeded = false;
-            response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //return await Result<string>.FailAsync();
             if (user == null || user.RefreshToken != currentToken)
             {
                 response.Data = "Invalid refresh token";
@@ -140,28 +147,26 @@ namespace QueenFisher.Data.Repositories
                 response.Succeeded = true;
                 response.Data = _token.CreateToken(UserModel);
                 response.Message = "Successful refreshed token";
-                response.StatusCode = (int)HttpStatusCode.Accepted;
-
                 var refreshToken = _token.SetRefreshToken();
                 await SaveRefreshToken(user, refreshToken);
             }
             return response;
         }
 
-        public async Task<Response<string>> Register(RegisterDTO user)
+        public async Task<Result<string>> Register(RegisterDTO user)
         {
             try
             {
                 // checks if a user with the specified email already exists in the system
                 var checkUser = await _userManager.FindByEmailAsync(user.Email);
-                if(checkUser != null)
+                if (checkUser != null)
                 {
-                    return Response<string>.Fail("user already exist", (int)HttpStatusCode.Unauthorized);
+                    return await Result<string>.FailAsync("user already exist");
                 }
                 //var mapInitializer = new MapInitializer();
                 //var newUser = mapInitializer.regMapper.Map<RegisterDTO, AppUser>(user);
                 //retrieves a list of roles from the system
-               
+
                 var newUser = new AppUser();
                 newUser.Email = user.Email;
                 newUser.UserName = user.UserName;
@@ -183,52 +188,62 @@ namespace QueenFisher.Data.Repositories
                 var result = await _userManager.CreateAsync(newUser, user.Password);
                 if (!result.Succeeded)
                 {
-                    return Response<string>.Fail("user could not be created", (int)HttpStatusCode.UnprocessableEntity);
+                    return await Result<string>.FailAsync("user could not be created");
                 }
                 //If the user creation is successful, the function adds the new user to the "User"  role
                 await _userManager.AddToRoleAsync(newUser, "Customer");
                 //generates an email confirmation token
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                return Response<string>.Success($"click the link sent to {user.Email} to confirm your email", token, (int)HttpStatusCode.Created);
+                return new Result<string> { Succeeded = true, Data = token, Message = $"click the link sent to {user.Email} to confirm your email" };
             }
             catch (Exception ex)
             {
 
-                return Response<string>.Fail("user could not be created, an error occured", (int)HttpStatusCode.InternalServerError);
+                return await Result<string>.FailAsync("user could not be created, an error occured");
             }
-           
+
 
         }
-
-        public async Task<object> ResetPassword(UpdatePasswordDTO model)
+        public async Task<Result<string>> ResetPassword(UpdatePasswordDTO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                return "The Email Provided is not associated with a user account.";
+                return await Result<string>.FailAsync("an error occured while comfirming email");
+
             }
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
 
             if (!result.Succeeded)
             {
-                return "The Provided Reset Token is Invalid or Has expired";
+                // return "The Provided Reset Token is Invalid or Has expired";
+                return await Result<string>.FailAsync("an error occured while comfirming email");
             }
-            return "Password Reset Successfully";
+
+            return await Result<string>.SuccessAsync("Password Reset Successfully");
+
         }
 
-        public async Task<Response<string>> Confirmemail(string email, string token)
+
+        public async Task<Result<string>> Confirmemail(string email, string token)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return Response<string>.Fail("user does not exist", (int)HttpStatusCode.NotFound);
+                return await Result<string>.FailAsync("user does not exist");
             }
             var res = await _userManager.ConfirmEmailAsync(user, token);
             if (res.Succeeded)
             {
-                return Response<string>.Success("email has been confirmed", "confirmed", (int)HttpStatusCode.Accepted);
+                return await Result<string>.SuccessAsync("email has been confirmed");
             }
-            return Response<string>.Fail("an error occured while comfirming email", (int)HttpStatusCode.InternalServerError);
+            return await Result<string>.FailAsync("an error occured while comfirming email");
         }
-    }
+
+        public async Task Signout()
+        {
+            var headers = _httpContext.HttpContext.Request.Headers;
+            headers.Remove("Authorisation");
+        }
+    } 
 }

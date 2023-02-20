@@ -1,4 +1,5 @@
 
+using QueenFisher.Core.Interfaces;
 using QueenFisher.Core.Interfaces.IRepositories;
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Core.Services;

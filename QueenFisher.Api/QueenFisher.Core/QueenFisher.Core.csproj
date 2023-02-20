@@ -19,9 +19,9 @@
   <ItemGroup>
     <Compile Include="DTO\ChangePasswordDTO.cs" />
     <Compile Include="DTO\LoginDTO.cs" />
+    <Compile Include="DTO\LoginUserDTO.cs" />
     <Compile Include="DTO\RegisterDTO.cs" />
     <Compile Include="DTO\ResetPasswordDTO.cs" />
-    <Compile Include="DTO\Response.cs" />
     <Compile Include="DTO\UpdatePasswordDTO.cs" />
   </ItemGroup>
 
@@ -35,8 +35,4 @@
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTO\" />
-  </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using QueenFisher.Core.DTO;
+﻿using AspNetCoreHero.Results;
+using QueenFisher.Core.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,13 @@ namespace QueenFisher.Core.Interfaces.IRepositories
 {
     public interface IAuthenticationRepository
     {
-        Task<Response<string>> Login(LoginDTO model);
-        Task<Response<string>> Register(RegisterDTO user);
-        Task<Response<string>> RefreshToken();
-        public Task<object> ChangePassword(ChangePasswordDTO changePasswordDTO);
-        public Task<object> ResetPassword(UpdatePasswordDTO resetPasswordDTO);
-        public Task<object> ForgottenPassword(ResetPasswordDTO model);
-        Task<Response<string>> Confirmemail(string email, string token);
+        Task<Result<LoginUserDTO>> Login(LoginDTO model);
+        Task<Result<string>> Register(RegisterDTO user);
+        Task<Result<string>> RefreshToken();
+        public Task<Result<string>>ChangePassword(ChangePasswordDTO changePasswordDTO);
+        public Task<Result<string>>ResetPassword(UpdatePasswordDTO resetPasswordDTO);
+        public Task<Result<string>>ForgottenPassword(ResetPasswordDTO model);
+        Task<Result<string>> Confirmemail(string email, string token);
+        Task Signout();
     }
 }

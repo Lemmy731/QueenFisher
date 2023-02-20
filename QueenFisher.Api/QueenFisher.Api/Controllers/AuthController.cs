@@ -8,6 +8,7 @@ using QueenFisher.Core.DTO;
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Core.Utilities;
 using System.Security.Claims;
+using QueenFisher.Core.Interfaces;
 
 namespace QueenFisher.Api.Controllers
 {
@@ -34,7 +35,7 @@ namespace QueenFisher.Api.Controllers
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", new { email = user.Email, token = response.Data }, Request.Scheme);
                 var emailRequest = new EmailMessage(new string[] { user.Email }, "Email confirmation", $"use this link to confirm your email {confirmationLink}");
                 await _mailService.SendEmailAsync(emailRequest);    
-                return Ok(response.Data);
+                return Ok(response.Message);
             }
             return BadRequest(response);
         }
@@ -69,7 +70,7 @@ namespace QueenFisher.Api.Controllers
             return Ok(result);
         }
         [HttpPost("Reset-Update-Password")]
-        public async Task<IActionResult> ResetUpdatePassword([FromBody] UpdatePasswordDTO model, string Token)
+        public async Task<IActionResult> ResetUpdatePassword([FromBody] UpdatePasswordDTO model)
         {
             var result = await _authService.ResetPassword(model);
             return Ok(result);
@@ -140,6 +141,13 @@ namespace QueenFisher.Api.Controllers
             // ...
 
             return Ok($"The email {email} was signed in successfully ");
+        }
+
+        [HttpPut("signout")]
+        public async Task<IActionResult> Signout()
+        {
+            await _authService.Signout();
+            return Ok();
         }
 
     }
