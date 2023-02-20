@@ -1,17 +1,20 @@
 ﻿using AspNetCoreHero.Results;
+using AutoMapper;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using QueenFisher.Core;
-using QueenFisher.Core.DTO;
+
 using QueenFisher.Core.Interfaces;
-using QueenFisher.Core.Interfaces.IRepositories;
+
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Core.Utilities;
 using QueenFisher.Data.Domains;
+using QueenFisher.Data.DTO;
 using QueenFisher.Data.Enums;
+using QueenFisher.Data.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +34,11 @@ namespace QueenFisher.Data.Repositories
         private readonly IHttpContextAccessor _httpContext;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailService;
+        private readonly IMapper _mapper;
+
         public AuthenticationRepository(UserManager<AppUser> userManager, ITokenService token,
            ITokenDetails tokenDetails, IHttpContextAccessor httpContext,
-           RoleManager<IdentityRole> roleManager, IEmailService emailService)
+           RoleManager<IdentityRole> roleManager, IEmailService emailService, IMapper mapper)
         {
             _userManager = userManager;
             _token = token;
@@ -41,6 +46,7 @@ namespace QueenFisher.Data.Repositories
             _httpContext = httpContext;
             _roleManager = roleManager;
             _emailService = emailService;
+            _mapper = mapper;
         }
         public string GetId() => _httpContext.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         public async Task<Result<string>> ChangePassword(ChangePasswordDTO changePasswordDTO)
@@ -90,14 +96,15 @@ namespace QueenFisher.Data.Repositories
                 return new Result<LoginUserDTO>
                 {
                     Succeeded = true,
-                    Data = new LoginUserDTO
-                    {
-                        firstname = user.FirstName,
-                        lastname = user.LastName,
-                        username = user.UserName,
-                        roles = userRoles,
-                        token = _token.CreateToken(UserModel)
-                    },
+                    Data = _mapper.Map<LoginUserDTO>(model),
+                    //new LoginUserDTO
+                    //{
+                    //    firstname = user.FirstName,
+                    //    lastname = user.LastName,
+                    //    username = user.UserName,
+                    //    roles = userRoles,
+                    //    token = _token.CreateToken(UserModel)
+                    //},
                     Message = "Logged in successfully"
                 };
             }
@@ -109,7 +116,7 @@ namespace QueenFisher.Data.Repositories
                 //response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 return await Result<LoginUserDTO>.FailAsync("Wrong Credential");
             }
-            return new Result<LoginUserDTO>();
+           
         }
 
         private async Task SaveRefreshToken(AppUser user, RefreshToken refreshToken)
@@ -167,18 +174,19 @@ namespace QueenFisher.Data.Repositories
                 //var newUser = mapInitializer.regMapper.Map<RegisterDTO, AppUser>(user);
                 //retrieves a list of roles from the system
 
-                var newUser = new AppUser();
-                newUser.Email = user.Email;
-                newUser.UserName = user.UserName;
-                newUser.FirstName = user.FirstName;
-                newUser.LastName = user.LastName;
-                newUser.PhoneNumber = user.Phone;
-                newUser.Avatar = user.Avatar;
+                //var newUser = new AppUser();
+                //newUser.Email = user.Email;
+                //newUser.UserName = user.UserName;
+                //newUser.FirstName = user.FirstName;
+                //newUser.LastName = user.LastName;
+                //newUser.PhoneNumber = user.Phone;
+                //newUser.Avatar = user.Avatar;
+                ////newUser.Gender = user.Gender;
+                //newUser.PasswordHash = user.Password;
+                //newUser.PublicId = user.Publicid;
+                //newUser.IsActive = user.IsActive;
                 //newUser.Gender = user.Gender;
-                newUser.PasswordHash = user.Password;
-                newUser.PublicId = user.Publicid;
-                newUser.IsActive = user.IsActive;
-                newUser.Gender = (Gender)(user.Gender);
+                var newUser = _mapper.Map<AppUser>(user);
 
 
                 var roles = await _roleManager.Roles.ToListAsync();

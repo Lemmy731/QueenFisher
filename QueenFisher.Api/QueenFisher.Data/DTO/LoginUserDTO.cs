@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueenFisher.Core.DTO
+namespace QueenFisher.Data.DTO
 {
     public class LoginUserDTO
     {

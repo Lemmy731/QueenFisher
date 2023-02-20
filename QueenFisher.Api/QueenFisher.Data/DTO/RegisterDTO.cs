@@ -1,11 +1,12 @@
-﻿using System;
+﻿using QueenFisher.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueenFisher.Core.DTO
+namespace QueenFisher.Data.DTO
 {
     public class RegisterDTO
     {
@@ -22,7 +23,7 @@ namespace QueenFisher.Core.DTO
         public string Password { get; set; }
         public string Phone { get; set; }
 
-        public int Gender { get; set; }
+        public Gender Gender { get; set; }
 
         public bool IsActive { get; set; } = false;
 

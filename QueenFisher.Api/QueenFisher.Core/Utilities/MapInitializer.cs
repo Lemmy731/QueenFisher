@@ -2,7 +2,6 @@
 using AutoMapper;
 using QueenFisher.Data.Domains;
 using QueenFisher.Data.DTO;
-using QueenFisher.Core.DTO;
 
 namespace QueenFisher.Core.Utilities
 {
@@ -13,6 +12,8 @@ namespace QueenFisher.Core.Utilities
         {
             CreateMap<AppUser, AppUserDto>().ReverseMap();
             CreateMap<AppUser,AppUserDtoForUpdate>().ReverseMap();
+            CreateMap<AppUser,LoginUserDTO>().ReverseMap();
+            CreateMap<AppUser, RegisterDTO>().ReverseMap();
         }
     }
 }

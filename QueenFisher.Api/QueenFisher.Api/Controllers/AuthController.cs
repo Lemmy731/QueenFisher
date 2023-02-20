@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QueenFisher.Core.DTO;
+
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Core.Utilities;
 using System.Security.Claims;
 using QueenFisher.Core.Interfaces;
+using QueenFisher.Data.DTO;
 
 namespace QueenFisher.Api.Controllers
 {

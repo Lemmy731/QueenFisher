@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
-using QueenFisher.Core.DTO;
-using QueenFisher.Core.Interfaces.IRepositories;
 using QueenFisher.Core.Interfaces.IServices;
+using QueenFisher.Data.DTO;
+using QueenFisher.Data.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

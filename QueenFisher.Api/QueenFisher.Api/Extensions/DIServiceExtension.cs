@@ -1,14 +1,13 @@
 
 using QueenFisher.Core.Services;
 using QueenFisher.Core.Interfaces;
-using QueenFisher.Core.Interfaces.IRepositories;
 using QueenFisher.Core.Interfaces.IServices;
-using QueenFisher.Core.Services;
 using QueenFisher.Core.Utilities;
 using QueenFisher.Data;
 using QueenFisher.Data.UnitOfWork;
 using IUnitOfWork = QueenFisher.Data.IUnitOfWork;
 using QueenFisher.Data.Repositories;
+using QueenFisher.Data.IRepositories;
 
 namespace QueenFisher.Api.Extensions
 {
