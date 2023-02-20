@@ -31,6 +31,7 @@ builder.Services.AddAuthentication();
 // Add Jwt Authentication and Authorization
 services.ConfigureAuthentication(config);
 
+
 //Add cors
 services.AddCors(options =>
 {
