@@ -1,4 +1,5 @@
 ﻿using QueenFisher.Data;
+using QueenFisher.Data.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace QueenFisher.Data
     {
         IUserRepository UserRepository { get; }
         Task<int> Save();
+        IMealRepository MealRepository { get; }
     }
 }

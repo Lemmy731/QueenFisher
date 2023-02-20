@@ -7,6 +7,7 @@ using AspNetCoreHero.Results;
 using MySqlX.XDevAPI.Common;
 using QueenFisher.Core.Interfaces.IServices;
 using QueenFisher.Data;
+using QueenFisher.Data.DTO;
 using QueenFisher.Data.IRepositories;
 
 namespace QueenFisher.Core.Services
@@ -44,6 +45,54 @@ namespace QueenFisher.Core.Services
                 return Result<string>.Fail("an error occured while deleting meal");
             }
         }
+
+
+
+        public async Task<Result<MealDTO>> GetMeal(string Id)
+        {
+            try
+            {
+                var result = await _unitOfWork.MealRepository.GetMeal(Id);
+                return Result<MealDTO>.Success(result, "Successful");
+            }
+            catch (Exception ex)
+            {
+                //log.Fatal(ex.Message())
+                return Result<MealDTO>.Fail("An error occured while getting meal");
+            }
+        }
+
+        public async Task<Result<string>> AddMealAsync(MealDTO meal)
+        {
+            try
+            {
+                var result = await _unitOfWork.MealRepository.AddMealAsync(meal);
+                return Result<string>.Success( result, "Meal created successfully");
+            }
+            catch (Exception ex)
+            {
+                //log.Fatal(ex.Message())
+                return Result<string>.Fail("An error occured while adding meal");
+            }
+
+        }
+
+
+        public async Task<Result<string>> AddMultipleMealAsync(MealDTO[] meals)
+        {
+            try
+            {
+                await _unitOfWork.MealRepository.AddMultipleMealAsync(meals);
+                return Result<string>.Success("Meals created successfully");
+            }
+            catch (Exception ex)
+            {
+
+                //log.Fatal(ex.Message())
+                return Result<string>.Fail("An error occured while adding multipleMeal");
+            }
+        }
+
 
 
     }
