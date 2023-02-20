@@ -22,12 +22,14 @@ namespace QueenFisher.Api.Extensions
             // Add Repository Injections Here
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services .AddScoped <IMealRepository, MealRepository>();
           
             // Add Model Services Injection Here
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ITokenDetails, TokenDetails>();
+            services .AddScoped<IMealService, MealService>();
 
             services.AddScoped<IUserService, UserService>();
           
