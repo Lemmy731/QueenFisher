@@ -32,6 +32,7 @@ namespace QueenFisher.Api.Extensions
             services .AddScoped<IMealService, MealService>();
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGetMealService, GetMealService>();
           
             // Add Fluent Validator Injections Here
 

@@ -14,6 +14,7 @@ namespace QueenFisher.Core.Utilities
             CreateMap<AppUser,AppUserDtoForUpdate>().ReverseMap();
             CreateMap<AppUser,LoginUserDTO>().ReverseMap();
             CreateMap<AppUser, RegisterDTO>().ReverseMap();
+            CreateMap<Meal, MealDTO>().ReverseMap();
         }
     }
 }
