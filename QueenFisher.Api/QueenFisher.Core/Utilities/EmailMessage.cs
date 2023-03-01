@@ -15,7 +15,7 @@ namespace QueenFisher.Core.Utilities
         public EmailMessage(IEnumerable<string> to, string subject, string content)
         {
             To = new List<MailboxAddress>();
-            To.AddRange(to.Select(x => new MailboxAddress("HMS", x)));
+            To.AddRange(to.Select(x => new MailboxAddress("QueenFisher", x)));
             Subject = subject;
             Content = content;
         }

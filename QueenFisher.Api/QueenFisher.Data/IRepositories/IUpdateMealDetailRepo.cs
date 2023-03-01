@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueenFisher.Core.Interfaces
+namespace QueenFisher.Data.IRepositories
 {
-    public interface IUpdateMealDetailService
+    public interface IUpdateMealDetailRepo
     {
-        Task <string> UpdateAsync(UpdateMealDetailDTO updateMeal);
-
+        Task<string> UpdateAsync(UpdateMealDetailDTO meal);
     }
 }

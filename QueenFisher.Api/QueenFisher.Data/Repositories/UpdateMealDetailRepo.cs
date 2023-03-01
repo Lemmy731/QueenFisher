@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QueenFisher.Core.DTO;
-using QueenFisher.Core.Interfaces;
+//using QueenFisher.Core.Interfaces;
 using QueenFisher.Data.Context;
 using QueenFisher.Data.Domains;
+using QueenFisher.Data.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using QueenFisher.Core.DTO;
 using QueenFisher.Core.Interfaces;
+using QueenFisher.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,12 @@ namespace QueenFisher.Core.Services
             _mapper = mapper;   
         }
 
-        public async Task<Response<string>> UpdateAsync(UpdateMealDetailDTO data)
+        public async Task<string> UpdateAsync(UpdateMealDetailDTO data)
         {
             var response = await _unitOfWork.UpdateMealDetailRepo.UpdateAsync(data);
-            if (response != null) return Response<string>.Success("successful", response);
-            return Response<string>.Fail("Failed");
+            if (response != null)
+             return ("successful");
+            return("Failed");
 
         }
     }

@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QueenFisher.Core.Interfaces
+namespace QueenFisher.Data.DTO
 {
-    public interface IUnitOfWork
+    public class ResetPasswordDTO
     {
+
         IUserRepository UserRepository { get; }
-        IUpdateMealDetailRepo UpdateMealDetailRepo { get; }
+        //IUpdateMealDetailRepo UpdateMealDetailRepo { get; }
+
+        public string Email { get; set; }
+
     }
 }

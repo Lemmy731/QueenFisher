@@ -18,8 +18,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddDbContext<QueenFisherDbContext>(options => options.UseSqlServer
 (builder.Configuration.GetConnectionString("ConnStr")));
 
-builder.Services.AddHttpClient<ITwilioRestClient, TwilioRest>();
-
 //builder.Services.AddControllers();
 // Configure Mailing Service
 builder.Services.ConfigureMailService(config);
@@ -35,6 +33,7 @@ builder.Services.AddAuthentication();
 
 // Add Jwt Authentication and Authorization
 services.ConfigureAuthentication(config);
+
 
 //Add cors
 services.AddCors(options =>
