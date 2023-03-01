@@ -12,8 +12,8 @@ using QueenFisher.Data.Context;
 namespace QueenFisher.Data.Migrations
 {
     [DbContext(typeof(QueenFisherDbContext))]
-    [Migration("20230210111534_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230218230946_initial migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

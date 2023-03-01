@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using QueenFisher.Api;
 using QueenFisher.Api.Extensions;
 using QueenFisher.Data.Context;
 using QueenFisher.Data.Seeding;
 using Serilog;
+using Twilio.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -16,9 +18,12 @@ builder.Services.AddHttpClient();
 builder.Services.AddDbContext<QueenFisherDbContext>(options => options.UseSqlServer
 (builder.Configuration.GetConnectionString("ConnStr")));
 
+builder.Services.AddHttpClient<ITwilioRestClient, TwilioRest>();
+
 //builder.Services.AddControllers();
 // Configure Mailing Service
 builder.Services.ConfigureMailService(config);
+builder.Services.ConfigureSmsService(config);
 
 builder.Services.AddSingleton(Log.Logger);
 

@@ -18,6 +18,7 @@ namespace QueenFisher.Api.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Add Model Services Injection Here
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUpdateMealDetailService, UpdateMealDetailService>();
             // Add Fluent Validator Injections Here
 
         }
